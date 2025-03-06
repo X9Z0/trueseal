@@ -1,13 +1,13 @@
 // server.js
-const express = require("express");
-const cors = require("cors");
-const { ethers } = require("ethers");
-const mongoose = require("mongoose");
-const multer = require("multer");
-const { create } = require("ipfs-http-client");
-const QRCode = require("qrcode");
-const crypto = require("crypto");
-const contractABI = require("./contractABI.json");
+import express from "express";
+import cors from "cors";
+import { ethers } from "ethers";
+import mongoose from "mongoose";
+import multer from "multer";
+import { create } from "ipfs-http-client";
+import QRCode from "qrcode";
+import crypto from "crypto";
+import contractABI from "./contractABI.json" with { type: "json" };
 
 // Setup Express
 const app = express();

@@ -8,6 +8,8 @@ import { create } from "ipfs-http-client";
 import QRCode from "qrcode";
 import crypto from "crypto";
 import contractABI from "./contractABI.json" with { type: "json" };
+import dotenv from 'dotenv'
+dotenv.config()
 
 // Setup Express
 const app = express();

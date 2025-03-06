@@ -1,4 +1,4 @@
-// /** @type import('hardhat/config').HardhatUserConfig */
+// hardhat.config.js
 require("@nomiclabs/hardhat-waffle");
 require("dotenv").config();
 

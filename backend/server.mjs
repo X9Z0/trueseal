@@ -117,7 +117,7 @@ app.post("/api/products", upload.single("image"), async (req, res) => {
     // Generate QR code images
     const qrCodeUrls = await Promise.all(
       qrCodeIds.map(async (id) => {
-        const verificationUrl = `http://localhost:5000/verify/${id}`;
+        const verificationUrl = `http://localhost:3000/verify/${id}`;
         const qrCodeDataUrl = await QRCode.toDataURL(verificationUrl);
         return { id, qrCodeDataUrl };
       })

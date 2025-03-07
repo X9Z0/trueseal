@@ -1,3 +1,9 @@
+import ProductsDashboard from "@/pages/DashBoard";
+
 export default function Home() {
-  return <div>hello world</div>;
+  return (
+    <>
+      <ProductsDashboard />
+    </>
+  );
 }

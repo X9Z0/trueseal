@@ -7,10 +7,17 @@ import { getAllProducts, type ProductData } from "@/utils/api";
 import { format } from "date-fns";
 import { useRouter } from "next/navigation";
 import { Shield, Package, QrCode, Plus, Loader2 } from "lucide-react";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
 export default function Dashboard() {
   const [products, setProducts] = useState<ProductData[]>([]);
   const [loading, setLoading] = useState(true);
+  const [selectedQR, setSelectedQR] = useState<string | null>(null);
   const router = useRouter();
 
   useEffect(() => {
@@ -80,7 +87,7 @@ export default function Dashboard() {
               <div className="text-2xl font-bold">
                 {products.reduce(
                   (acc, product) => acc + product.qrCodeIds.length,
-                  0,
+                  0
                 )}
               </div>
             </CardContent>
@@ -130,6 +137,17 @@ export default function Dashboard() {
                           <span className="font-medium">Manufacturer:</span>{" "}
                           {product.manufacturerAddress}
                         </p>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className="w-full mt-4"
+                          onClick={() =>
+                            setSelectedQR(`/verify/${product.qrCodeIds[0]}`)
+                          }
+                        >
+                          <QrCode className="h-4 w-4 mr-2" />
+                          View QR Code
+                        </Button>
                       </div>
                     </div>
                   </CardContent>
@@ -139,6 +157,36 @@ export default function Dashboard() {
           </div>
         </div>
       </div>
+
+      <Dialog open={!!selectedQR} onOpenChange={() => setSelectedQR(null)}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Product QR Code</DialogTitle>
+          </DialogHeader>
+          <div className="flex flex-col items-center gap-4">
+            <div className="relative aspect-square w-64">
+              <img
+                src={`https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${window.location.origin}${selectedQR}`}
+                alt="QR Code"
+                className="w-full h-full"
+              />
+            </div>
+            <p className="text-sm text-muted-foreground text-center">
+              Scan this QR code to verify the product authenticity
+            </p>
+            <Button
+              variant="outline"
+              onClick={() => {
+                if (selectedQR) {
+                  window.open(selectedQR, "_blank");
+                }
+              }}
+            >
+              Test Verification
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

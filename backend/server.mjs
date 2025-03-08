@@ -52,7 +52,6 @@ const ProductSchema = new mongoose.Schema({
 const Product = mongoose.model("Product", ProductSchema);
 
 // Setup IPFS client
-const ipfs = create({ host: "localhost", port: "5001", protocol: "http" });
 
 // Setup Ethereum provider and contract
 const provider = new ethers.providers.JsonRpcProvider("http://localhost:8545");
@@ -67,6 +66,8 @@ const contract = new ethers.Contract(contractAddress, contractABI, wallet);
 function generateQRCodeId() {
   return crypto.randomBytes(16).toString("hex");
 }
+
+const ipfs = create({ host: "localhost", port: "5001", protocol: "http" });5
 
 // Endpoint to add a new product and generate QR codes
 app.post("/api/products", upload.single("image"), async (req, res) => {
@@ -117,7 +118,7 @@ app.post("/api/products", upload.single("image"), async (req, res) => {
     // Generate QR code images
     const qrCodeUrls = await Promise.all(
       qrCodeIds.map(async (id) => {
-        const verificationUrl = `http://localhost:3000/verify/${id}`;
+        const verificationUrl = ` http://localhost:3000/verify/${id}`;
         const qrCodeDataUrl = await QRCode.toDataURL(verificationUrl);
         return { id, qrCodeDataUrl };
       })
@@ -188,3 +189,6 @@ app.get("/api/products", async (req, res) => {
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
+
+// product 
+// hash id -> blockchain () databse product save qrcode (qrid) qrcodes localhost:3000/{qrid} 

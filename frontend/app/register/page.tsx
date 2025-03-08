@@ -14,6 +14,7 @@ import { toast } from "sonner";
 
 interface RegisterFormData {
   productName: string;
+  quantity: string;
   metadata: string;
   image: FileList;
 }
@@ -32,6 +33,7 @@ export default function RegisterPage() {
       setLoading(true);
       const formData = new FormData();
       formData.append("productName", data.productName);
+      formData.append("quantity", data.quantity);
       formData.append("metadata", data.metadata);
       if (data.image[0]) {
         formData.append("image", data.image[0]);
@@ -81,6 +83,21 @@ export default function RegisterPage() {
                   </p>
                 )}
               </div>
+              <div className="space-y-2">
+                <Label htmlFor="quantity">Quantity</Label>
+                <Input
+                  id="quantity"
+                  {...register("quantity", {
+                    required: "quantity is required",
+                  })}
+                  placeholder="Enter quantity"
+                />
+                {errors.quantity && (
+                  <p className="text-sm text-destructive">
+                    {errors.quantity.message}
+                  </p>
+                )}
+              </div>
 
               <div className="space-y-2">
                 <Label htmlFor="metadata">Metadata (JSON)</Label>
@@ -113,9 +130,7 @@ export default function RegisterPage() {
                   id="image"
                   type="file"
                   accept="image/*"
-                  {...register("image", {
-                    required: "Product image is required",
-                  })}
+                  {...register("image")}
                 />
                 {errors.image && (
                   <p className="text-sm text-destructive">

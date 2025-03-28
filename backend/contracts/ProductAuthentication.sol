@@ -14,10 +14,8 @@ contract ProductAuthentication {
         bool isAuthentic;
     }
     
-    // Map unique QR codes to products
     mapping(string => Product) public products;
     
-    // Events
     event ProductRegistered(string qrCodeId, string productName, address manufacturer);
     event ProductVerified(string qrCodeId, bool isAuthentic);
     
@@ -30,7 +28,6 @@ contract ProductAuthentication {
         _;
     }
     
-    // Register a new product with a unique QR code
     function registerProduct(
         string memory qrCodeId,
         string memory productId,
@@ -38,10 +35,8 @@ contract ProductAuthentication {
         string memory metadata,
         string memory ipfsHash
     ) public {
-        // Check if QR code already exists
         require(bytes(products[qrCodeId].productId).length == 0, "This QR code has already been registered");
         
-        // Register the product
         products[qrCodeId] = Product({
             productId: productId,
             productName: productName,
@@ -55,7 +50,6 @@ contract ProductAuthentication {
         emit ProductRegistered(qrCodeId, productName, msg.sender);
     }
     
-    // Batch register multiple products at once
     function batchRegisterProducts(
         string[] memory qrCodeIds,
         string memory productId,
@@ -68,7 +62,6 @@ contract ProductAuthentication {
         }
     }
     
-    // Verify if a product is authentic
     function verifyProduct(string memory qrCodeId) public view returns (bool, Product memory) {
         Product memory product = products[qrCodeId];
         return (product.isAuthentic, product);

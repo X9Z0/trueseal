@@ -11,15 +11,12 @@ import contractABI from "./contractABI.json" with { type: "json" };
 import dotenv from 'dotenv'
 dotenv.config()
 
-// Setup Express
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// Middleware
 app.use(cors());
 app.use(express.json());
 
-// Configure multer for file uploads
 const storage = multer.diskStorage({
   destination: "uploads/",
   filename: (req, file, cb) => {
@@ -28,7 +25,6 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage });
 
-// Connect to MongoDB
 mongoose
   .connect("mongodb://localhost:27017/product-authentication", {
     useNewUrlParser: true,
@@ -37,7 +33,6 @@ mongoose
   .then(() => console.log("MongoDB connected"))
   .catch((err) => console.error("MongoDB connection error:", err));
 
-// MongoDB Schema for products
 const ProductSchema = new mongoose.Schema({
   productId: String,
   productName: String,
@@ -51,9 +46,8 @@ const ProductSchema = new mongoose.Schema({
 
 const Product = mongoose.model("Product", ProductSchema);
 
-// Setup IPFS client
 
-// Setup Ethereum provider and contract
+// Etherum
 const provider = new ethers.providers.JsonRpcProvider("http://localhost:8545");
 const privateKey =
   process.env.PRIVATE_KEY ||
@@ -62,33 +56,28 @@ const wallet = new ethers.Wallet(privateKey, provider);
 const contractAddress = process.env.CONTRACT_ADDRESS;
 const contract = new ethers.Contract(contractAddress, contractABI, wallet);
 
-// Generate a unique QR code ID
 function generateQRCodeId() {
   return crypto.randomBytes(16).toString("hex");
 }
 
 const ipfs = create({ host: "localhost", port: "5001", protocol: "http" });5
 
-// Endpoint to add a new product and generate QR codes
 app.post("/api/products", upload.single("image"), async (req, res) => {
   try {
     const { productName, quantity, metadata } = req.body;
     const productId = crypto.randomBytes(8).toString("hex");
 
-    // Upload image to IPFS if provided
     let ipfsHash = "";
     if (req.file) {
       const result = await ipfs.add(req.file.buffer);
       ipfsHash = result.path;
     }
 
-    // Generate unique QR code IDs
     const qrCodeIds = [];
     for (let i = 0; i < parseInt(quantity); i++) {
       qrCodeIds.push(generateQRCodeId());
     }
 
-    // Store in MongoDB
     const product = new Product({
       productId,
       productName,
@@ -140,10 +129,8 @@ app.get("/api/verify/:qrCodeId", async (req, res) => {
   try {
     const { qrCodeId } = req.params;
 
-    // Check with blockchain
     const [isAuthentic, productData] = await contract.verifyProduct(qrCodeId);
 
-    // Get additional details from MongoDB
     const product = await Product.findOne({ qrCodeIds: qrCodeId });
 
     if (!product) {
